@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+1) controller is a bean. since I use @RestController, which is a java-config, so it does not
+need declare <bean>
+
+2) to use <mvc:annotation-driven />, it needs to declare
+    a) xmlns:mvc="http://www.springframework.org/schema/mvc"
+    b) it's schema
+
+3) it's not necessary to include version number in schema, like 
+"http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd". spring will pick highest availabe
+version from project dependencies.
+http://gordondickens.com/wordpress/2012/07/30/enterprise-spring-framework-best-practices-part-3-xml-config/
+
+ -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+
+<!-- Scans within the base package of the application for @Components to configure as beans -->
+<!-- @Controller, @Service, @Configuration, etc. -->
+<context:component-scan base-package="hello" />
+
+<!-- Enables the Spring MVC @Controller programming model -->
+<mvc:annotation-driven />
+
+</beans>
+
+
+<!-- below is from http://www.mkyong.com/maven/how-to-create-a-web-application-project-with-maven/
+it is mainly for jsp file -->
+<!-- 
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+ 
+	<context:component-scan base-package="com.mkyong.controller" />
+ 
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/pages/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+ 
+</beans>
+-->
+
+<!-- 
+by default, spring goes to [servlet-name]-servlet.xml to find bean definition/configuration.
+it can be configured to search bean definition in a specified file.
+
+http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html
+<web-app>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/root-context.xml</param-value>    go to this file to find bean configuration
+    </context-param>
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value></param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+</web-app>
+ -->
+
