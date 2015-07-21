@@ -9,7 +9,8 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-      <jettyVersion>9.3.1-SNAPSHOT</jettyVersion>
+    <jettyVersion>9.3.1-SNAPSHOT</jettyVersion>
+    <junitVersion>4.11</junitVersion>
   </properties>
 
 <dependencyManagement>
@@ -25,7 +26,6 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <!-- <version>4.1.7.RELEASE</version> -->
       <exclusions>
         <exclusion> 
           <groupId>commons-logging</groupId>
@@ -40,13 +40,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>${junitVersion}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <!-- <version>4.1.7.RELEASE</version> -->
       <!-- <scope>runtime</scope> -->
     </dependency>
 
@@ -75,14 +74,11 @@
       <artifactId>logback-classic</artifactId>
       <version>1.1.3</version>
     </dependency>
-
   </dependencies>
 
-
-
   <build>
-<!--     <finalName>SimpleWebApp</finalName> -->
-  <plugins>
+    <!-- <finalName>SimpleWebApp</finalName> -->
+    <plugins>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>

@@ -21,6 +21,8 @@ Logging
 Using logback for logging.
 TODO: add logback-access
 
+Test it
+>  curl  "0.0.0.0:8080/hello/greeting"
 
 ## reference
 [1]: http://www.mkyong.com/maven/how-to-create-a-web-application-project-with-maven/
