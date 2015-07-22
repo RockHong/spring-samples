@@ -1,16 +1,25 @@
 package hello;
 
+import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Order {
-    private static final Logger logger = LoggerFactory.getLogger(Order.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Order.class);
     
     public String getCustomer() {
-	return "hong";
+        return "hong";
     }
     
+    @Auditable
     public double calculateAmount(double amount, double discount) {
-	return amount*discount;
+    	Random random = new Random(System.currentTimeMillis());
+    	try {
+			Thread.sleep(random.nextLong() % 5000);
+		} catch (InterruptedException e) {
+			LOGGER.info("sleep is interrupted");
+		}
+        return amount*discount;
     }
 }

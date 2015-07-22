@@ -10,7 +10,16 @@
   <!-- to auto-detect @Aspect annotated classes -->
   <aop:aspectj-autoproxy/>
   
+  <!-- define a xml-based aspect -->
+  <aop:config>
+    <aop:aspect ref="xmlAspect">
+      <aop:pointcut expression="execution(public * *(..))" id="someService"/>
+      <aop:after method="postInvoke" pointcut-ref="someService"/>
+    </aop:aspect>
+  </aop:config>
+  
   <bean name="order" class="hello.Order"/>
   <bean name="annotatedAspect" class="hello.SimpleAspect"/>
+  <bean name="xmlAspect" class="hello.XmlAspect"/>
 
 </beans>
