@@ -15,12 +15,12 @@ import org.springframework.util.StopWatch;
 public class AnnotationAspect {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationAspect.class);
     
-    @Before("hello.SimpleAspect.logPublicMethods()")
+    @Before("hello.AnnotationAspect.logPublicMethods()")
     public void logEntering(JoinPoint joinPoint) {
         LOGGER.info("*** ENTERING " + joinPoint.toString());
     }
     
-    @After("hello.SimpleAspect.logPublicMethods()")
+    @After("hello.AnnotationAspect.logPublicMethods()")
     public void logExiting(JoinPoint joinPoint) {
         LOGGER.info("*** EXITING " + joinPoint.toString());
     }
