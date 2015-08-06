@@ -50,6 +50,14 @@ https://gist.github.com/halyph/2990769
 	persistence xml configurations for major databases and jpa providers
 https://dev.mysql.com/doc/refman/5.5/en/connecting.html
 	mysql server default port
+http://antoniogoncalves.org/2014/12/11/generating-database-schemas-with-jpa-2-1/
+	Generating Database Schemas with JPA 2.1
+http://www.jakobk.com/2014/03/generate-ddl-script-of-jpa-persistence-unit-in-maven-using-hbm2ddl/
+	Generate DDL script of JPA persistence unit in Maven
+http://stackoverflow.com/questions/297438/auto-generate-data-schema-from-jpa-annotated-entity-classes
+	Generate data schema from JPA
+https://blogs.oracle.com/arungupta/entry/jpa_2_1_schema_generation
+	JPA 2.1 Schema Generation
 	
 	
 	

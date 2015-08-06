@@ -15,12 +15,21 @@ import org.slf4j.LoggerFactory;
 
 public class MainClass {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainClass.class);
+    private static final String OPT_CREATE_DB = "-create-db";
     
     public static void main(String[] args) {
+        if (args.length > 0 && args[0].equals(OPT_CREATE_DB)) {
+            createDB();
+        } else {
+            run();
+        }
+    }
+    
+    private static void createDB() {
         
     }
     
-    private void run() {
+    private static void run() {
         EntityManagerFactory emf = null;
         EntityManager em = null;
         
@@ -41,7 +50,7 @@ public class MainClass {
         }
     }
     
-    private void prepareData(EntityManager em) {
+    private static void prepareData(EntityManager em) {
         BasicRepository<Customer> customerRepo = new BasicRepository<Customer>(em);
         BasicRepository<Product> productRepo = new BasicRepository<Product>(em);
         
@@ -84,7 +93,7 @@ public class MainClass {
         }
     }
     
-    private void createOrder(EntityManager em) {
+    private static void createOrder(EntityManager em) {
         BasicRepository<Order> orderRepo = new BasicRepository<Order>(em);
         BasicRepository<Customer> customerRepo = new BasicRepository<Customer>(em);
         BasicRepository<Product> productRepo = new BasicRepository<Product>(em);
