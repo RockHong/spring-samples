@@ -43,6 +43,8 @@ http://www.javacodegeeks.com/2015/02/jpa-tutorial.html
 	an example
 http://hibernate.org/orm/documentation/getting-started/
 	you can find hibernate artifact there
+http://hibernate.org/orm/downloads/
+	it's said for jpa, should use hibernate-entitymanager artifact instead of hibernate-core. it's ture.
 https://docs.jboss.org/hibernate/entitymanager/3.5/reference/en/html/configuration.html
 	persistence.xml configuration for hibernate, very detail
 https://gist.github.com/mortezaadi/8619433
@@ -58,7 +60,22 @@ http://stackoverflow.com/questions/297438/auto-generate-data-schema-from-jpa-ann
 	Generate data schema from JPA
 https://blogs.oracle.com/arungupta/entry/jpa_2_1_schema_generation
 	JPA 2.1 Schema Generation
-	
-	
+http://hantsy.blogspot.jp/2013/12/jpa-21-schema-generation-properties.html
+https://github.com/hantsy/ee7-sandbox/wiki/jpa-scripts
+	JPA 2.1 Schema generation properties, this one is good
+http://www.javabeat.net/eclipselink-jpa-ddl-schema/
+	EclipseLink – DDL Schema Generation in JPA 2.1, to read
+http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html/ch03.html#configuration-optional-dialects
+	Hibernate SQL Dialects
+http://stackoverflow.com/questions/24650186/choosing-between-java-util-date-or-java-sql-date
+	about type for 'date and time'
+https://docs.jboss.org/hibernate/entitymanager/3.5/reference/en/html/configuration.html
+	here is reference of persistence.xml, good doc
+http://stackoverflow.com/questions/2585641/hibernate-jpa-db-schema-generation-best-practices
+	let jpa provider generate schema, or not? a discussions
+
+
+http://www.javaworld.com/article/2077886/data-storage/custom-schema-generation-with-hibernate-annotations.html
+http://stackoverflow.com/questions/306806/hibernate-automatically-creating-updating-the-db-tables-based-on-entity-classes
 	
 
