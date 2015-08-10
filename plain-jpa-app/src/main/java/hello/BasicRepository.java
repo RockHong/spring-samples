@@ -12,14 +12,15 @@ public class BasicRepository<T> implements Repository<T> {
     private EntityManager em;
     private Class<T> clazz;
     
-    public BasicRepository(EntityManager em) {
+    public BasicRepository(EntityManager em, Class<T> clazz) {
         this.em = em;
+        this.clazz = clazz;
     }
 
     public T save(T entity) {
         if (entity != null) {
             em.persist(entity);
-            LOGGER.info("persisted.");
+            LOGGER.info(clazz.getName() + "saved.");
         }
         return entity;
     }
@@ -43,7 +44,7 @@ public class BasicRepository<T> implements Repository<T> {
 
     public Long count() {
         String sqlStr = "SELECT COUNT(e) FROM " + clazz.getSimpleName() + " e";
-        return (Long) em.createQuery(sqlStr, clazz).getSingleResult();
+        return (Long) em.createQuery(sqlStr, Long.class).getSingleResult();
     }
 
     public void delete(T entity) {

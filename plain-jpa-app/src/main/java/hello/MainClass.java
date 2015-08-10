@@ -2,6 +2,7 @@ package hello;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 import javax.persistence.EntityManager;
@@ -9,24 +10,116 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javassist.tools.reflect.Reflection;
+
 public class MainClass {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainClass.class);
     private static final String OPT_CREATE_DB = "-create-db";
+    private static final String OPT_DROP_CREATE_DB = "-drop-create-db";
+    private static final String OPT_DROP_CREATE_DB_HB_1 = "-drop-create-db-hb-1";
+    private static final String OPT_DROP_CREATE_DB_HB_2 = "-drop-create-db-hb-2";
+    private static final String OPT_GEN_SCRIPT = "-gen-script";
     
     public static void main(String[] args) {
-        if (args.length > 0 && args[0].equals(OPT_CREATE_DB)) {
-            createDB();
-        } else {
+        if (args.length == 0) {
             run();
+        } else if (args[0].equals(OPT_CREATE_DB)){
+            createDB();
+        } else if (args[0].equals(OPT_DROP_CREATE_DB)){
+            dropAndCreateDB();
+        }  else if (args[0].equals(OPT_DROP_CREATE_DB_HB_1)){
+            dropAndCreateDBViaHibernate1();
+        }  else if (args[0].equals(OPT_DROP_CREATE_DB_HB_2)){
+            dropAndCreateDBViaHibernate2();
+        }  else if (args[0].equals(OPT_GEN_SCRIPT)){
+            generateSript();
         }
     }
     
     private static void createDB() {
+        Persistence.generateSchema("simplePU", null);
+    }
+    
+    private static void dropAndCreateDB() {
+        SessionFactory sf = HibernateUtil.getSessionFactory();
         
+        Properties properties = new Properties();
+        properties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+        properties.put("javax.persistence.schema-generation.create-source", "metadata");
+        properties.put("javax.persistence.schema-generation.drop-source", "metadata");
+        Persistence.generateSchema("simplePU", properties);
+        
+        sf.close();
+    }
+    
+    private static void dropAndCreateDBViaHibernate1() {
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        Configuration cfg = new Configuration().setProperties(properties);
+        cfg.addAnnotatedClass(Customer.class);
+        cfg.addAnnotatedClass(Order.class);
+        cfg.addAnnotatedClass(OrderLine.class);
+        cfg.addAnnotatedClass(Product.class);
+        String[] xx = cfg.generateSchemaCreationScript(Dialect.getDialect(cfg.getProperties()));
+        LOGGER.info("len of scripts " + xx.length);
+        for (String xxx: xx) {
+            LOGGER.info(xxx);            
+        }
+
+    }
+    
+    private static void dropAndCreateDBViaHibernate2() {
+        //SessionFactory sf = HibernateUtil.getSessionFactory();
+       
+        
+        //Properties properties = new Properties();
+        // override properties in xml
+        //properties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+        //Persistence.generateSchema("simplePU", properties);
+        
+        //sf.close();
+        
+        
+        Properties properties = new Properties();
+        // using key beginning with "javax.persistence.*" or ""hibernate.*" are both ok
+        //properties.setProperty("javax.persistence.jdbc.drive", "com.mysql.jdbc.Driver");
+        //properties.setProperty("javax.persistence.jdbc.url", "jdbc:mysql://localhost:3306/simplejpadb");
+        //properties.setProperty("javax.persistence.jdbc.user", "root");
+        //properties.setProperty("javax.persistence.jdbc.password", "");
+        properties.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+        properties.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/simplejpadb");
+        properties.setProperty("hibernate.connection.username", "root");
+        properties.setProperty("hibernate.connection.password", "");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        Configuration cfg = new Configuration().setProperties(properties);
+        //cfg.addResource("META-INF/persistence.xml");
+        //cfg.addPackage("hello");
+        cfg.addAnnotatedClass(Customer.class);
+        SchemaExport export = new SchemaExport(cfg);
+        export.setOutputFile("hb-exported.txt");
+        export.setFormat(false);
+        export.execute(false, true, false, true);
+
+    }
+    
+    private static void generateSript() {
+        Properties properties = new Properties();
+        // override properties in xml
+        properties.put("javax.persistence.schema-generation.database.action", "none");
+        // properties to generate script
+        properties.put("javax.persistence.schema-generation.scripts.action", "create");
+        properties.put("javax.persistence.schema-generation.scripts.create-target", "createDll.txt");
+            
+        Persistence.generateSchema("simplePU", properties);
     }
     
     private static void run() {
@@ -51,8 +144,8 @@ public class MainClass {
     }
     
     private static void prepareData(EntityManager em) {
-        BasicRepository<Customer> customerRepo = new BasicRepository<Customer>(em);
-        BasicRepository<Product> productRepo = new BasicRepository<Product>(em);
+        BasicRepository<Customer> customerRepo = new BasicRepository<Customer>(em, Customer.class);
+        BasicRepository<Product> productRepo = new BasicRepository<Product>(em, Product.class);
         
         if (customerRepo.count() == 0) {
             EntityTransaction txn = em.getTransaction();
@@ -94,9 +187,9 @@ public class MainClass {
     }
     
     private static void createOrder(EntityManager em) {
-        BasicRepository<Order> orderRepo = new BasicRepository<Order>(em);
-        BasicRepository<Customer> customerRepo = new BasicRepository<Customer>(em);
-        BasicRepository<Product> productRepo = new BasicRepository<Product>(em);
+        BasicRepository<Order> orderRepo = new BasicRepository<Order>(em, Order.class);
+        BasicRepository<Customer> customerRepo = new BasicRepository<Customer>(em, Customer.class);
+        BasicRepository<Product> productRepo = new BasicRepository<Product>(em, Product.class);
         
         List<Customer> customers = customerRepo.findAll();
         List<Product> products = productRepo.findAll();

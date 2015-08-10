@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -14,8 +15,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ORDER_LINE")
 public class OrderLine {
+    @Id
     @SequenceGenerator(name = "ORDER_LINE_SEQ", sequenceName = "ORDER_LINE_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "ORDER_LINE_SEQ", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "ORDER_LINE_SEQ", strategy = GenerationType.AUTO)
     private Long id;
     
     @ManyToOne(optional = false)

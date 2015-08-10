@@ -4,14 +4,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "PRODUCT")
 public class Product {
+    @Id
     @SequenceGenerator(name = "PRODUCT_SEQ", sequenceName = "PRODUCT_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "PRODUCT_SEQ", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "PRODUCT_SEQ", strategy = GenerationType.AUTO)
     private Long id;
     
     // usually if defaults of @Column is ok for you, @Column can be omitted

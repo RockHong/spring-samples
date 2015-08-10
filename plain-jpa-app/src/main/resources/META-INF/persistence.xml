@@ -9,13 +9,22 @@
       <class>hello.Order</class>
       <class>hello.OrderLine</class>
       <class>hello.Product</class>
+      <exclude-unlisted-classes>true</exclude-unlisted-classes>
       <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>
-      <validation-mode>CALLBACK</validation-mode>
       <properties>
+         <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
          <property name="javax.persistence.jdbc.drive" value="com.mysql.jdbc.Driver"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/simple-jpa-db"/>
-         <property name="javax.persistence.jdbc.user" value="test"/>
-         <property name="javax.persistence.jdbc.password" value="123456"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/simplejpadb"/>
+         <property name="javax.persistence.jdbc.user" value="root"/>
+         <property name="javax.persistence.jdbc.password" value=""/>
+         
+         <!-- <property name="javax.persistence.schema-generation.database.action" value="create"/>
+         <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
+         <property name="javax.persistence.schema-generation.drop-source" value="metadata"/> -->
+         
+         <!-- <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
+         <property name="javax.persistence.schema-generation.scripts.create-target" value="createDll.txt"/>
+         <property name="javax.persistence.schema-generation.scripts.drop-target" value="dropDll.txt"/>  -->
       </properties>
    </persistence-unit>
 </persistence>

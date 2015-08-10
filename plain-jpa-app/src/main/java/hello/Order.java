@@ -11,11 +11,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 
 import org.joda.time.DateTime;
 
@@ -23,10 +25,11 @@ import org.joda.time.DateTime;
 // @Table can be omitted, if defaults are ok. however, specify 'name' of @Table
 // is better, so that the mapping between entity and table wouldn't break 
 // if we refactor Order class name later on
-@Table(name = "ORDER")
+@Table(name = "SALES_ORDER")
 public class Order {
+    @Id
     @SequenceGenerator(name = "ORDER_SEQ", sequenceName = "ORDER_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "ORDER_SEQ", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "ORDER_SEQ", strategy = GenerationType.AUTO)
     private Long id;
     
     // do 'optional = false' in @ManyToOne and 'nullable = false' in @JoinColumn

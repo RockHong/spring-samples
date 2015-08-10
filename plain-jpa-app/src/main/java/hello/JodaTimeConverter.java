@@ -10,38 +10,35 @@ import org.joda.time.DateTime;
 /*
  * eclipselink has another interface called 'Converter', here we
  * use the 'standard' one
+ * 
+ * maybe type arguments of AttributeConverter can be omitted.
+ * but currently, if omit, hibernate raises an error
  */
 @Converter
-public class JodaTimeConverter implements AttributeConverter{
+public class JodaTimeConverter implements AttributeConverter<DateTime, Calendar>{
 
-    public Object convertToDatabaseColumn(Object attribute) {
+    public Calendar convertToDatabaseColumn(DateTime attribute) {
         if (attribute == null) {
             return null;
         }
         
-        if (attribute instanceof DateTime) {
-            DateTime joda = (DateTime) attribute;
-            Calendar date = Calendar.getInstance();
-            date.set(joda.getYear(), joda.getMonthOfYear(), joda.getDayOfMonth(), 
-                    joda.getHourOfDay(), joda.getMinuteOfHour(), joda.getSecondOfMinute());
-            date.set(Calendar.MILLISECOND, joda.getMillisOfSecond());
-            return date;
-        }
-        throw new IllegalArgumentException("the object to be converted is not org.joda.time.DateTime");
+        DateTime joda = (DateTime) attribute;
+        Calendar date = Calendar.getInstance();
+        date.set(joda.getYear(), joda.getMonthOfYear(), joda.getDayOfMonth(), 
+                joda.getHourOfDay(), joda.getMinuteOfHour(), joda.getSecondOfMinute());
+        date.set(Calendar.MILLISECOND, joda.getMillisOfSecond());
+        return date;
     }
 
-    public Object convertToEntityAttribute(Object dbData) {
+    public DateTime convertToEntityAttribute(Calendar dbData) {
         if (dbData == null) {
             return null;
         }
         
-        if (dbData instanceof Calendar) {
-            Calendar date = (Calendar) dbData;
-            return new DateTime(date.get(Calendar.YEAR), date.get(Calendar.MONTH) + 1,
-                    date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.HOUR_OF_DAY),
-                    date.get(Calendar.MINUTE), date.get(Calendar.SECOND), date.get(Calendar.MILLISECOND));
-        }
-        throw new IllegalArgumentException("the object to be converted is not java.util.Calendar");
+        Calendar date = (Calendar) dbData;
+        return new DateTime(date.get(Calendar.YEAR), date.get(Calendar.MONTH) + 1,
+                date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.HOUR_OF_DAY),
+                date.get(Calendar.MINUTE), date.get(Calendar.SECOND), date.get(Calendar.MILLISECOND));
     }
 
 }
