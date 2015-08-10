@@ -5,6 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
   
   <dependencies>
+    <!-- use hibernate-entitymanager, if you are using hibernate simply as jpa provider -->
     <!--  <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>

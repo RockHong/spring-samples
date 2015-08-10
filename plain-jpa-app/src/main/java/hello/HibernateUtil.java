@@ -8,10 +8,19 @@ import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+ * this class takes example from 
+ * http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html/ch01.html#tutorial-firstapp-helpers
+ * 
+ * it's a helper class to get SessionFactory
+ */
 public class HibernateUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(HibernateUtil.class);
     private static final SessionFactory sf = buildSessionFactoryFromProperties();
     
+    /*
+     * it will look for an xml cfg file called hibernate.cfg.xml
+     */
     private static SessionFactory buildSessionFactoryFromXMLConfig() {
         try {
             return new Configuration().configure().buildSessionFactory(

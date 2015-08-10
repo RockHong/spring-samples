@@ -24,6 +24,7 @@ import javassist.tools.reflect.Reflection;
 public class MainClass {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainClass.class);
     private static final String OPT_CREATE_DB = "-create-db";
+    // drop existing schema firstly, then created a new one
     private static final String OPT_DROP_CREATE_DB = "-drop-create-db";
     private static final String OPT_DROP_CREATE_DB_HB_1 = "-drop-create-db-hb-1";
     private static final String OPT_DROP_CREATE_DB_HB_2 = "-drop-create-db-hb-2";
@@ -46,6 +47,18 @@ public class MainClass {
     }
     
     private static void createDB() {
+        /*
+         * simply call Persistence.generateSchema() will create schema, but main() method
+         * never returns. some threads (relative to db connection/connect pool) will hang in there
+         * and never terminate. those never-terminate threads look like below,
+         * Daemon Thread [Abandoned connection cleanup thread] (Running)  
+         * Thread [pool-1-thread-1] (Running)   
+         * Thread [DestroyJavaVM] (Running)
+         */
+        Properties properties = new Properties();
+        properties.put("javax.persistence.schema-generation.database.action", "create");
+        properties.put("javax.persistence.schema-generation.create-source", "metadata");
+        properties.put("javax.persistence.schema-generation.drop-source", "metadata");
         Persistence.generateSchema("simplePU", null);
     }
     
@@ -58,64 +71,59 @@ public class MainClass {
         properties.put("javax.persistence.schema-generation.drop-source", "metadata");
         Persistence.generateSchema("simplePU", properties);
         
+        /*
+         * it's said calling SessionFactory::close() can help terminate never-terminate threads
+         * mentioned above.
+         * however, it's not true in my case.
+         */
         sf.close();
     }
     
+    /*
+     * this method has no problem of hanging threads like dropAndCreateDB() and createDB()
+     */
     private static void dropAndCreateDBViaHibernate1() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
         Configuration cfg = new Configuration().setProperties(properties);
+        // can also use reflection to not (hard-codely) call addAnnotatedClass() for every entity
         cfg.addAnnotatedClass(Customer.class);
         cfg.addAnnotatedClass(Order.class);
         cfg.addAnnotatedClass(OrderLine.class);
         cfg.addAnnotatedClass(Product.class);
-        String[] xx = cfg.generateSchemaCreationScript(Dialect.getDialect(cfg.getProperties()));
-        LOGGER.info("len of scripts " + xx.length);
-        for (String xxx: xx) {
-            LOGGER.info(xxx);            
+        String[] scripts = cfg.generateSchemaCreationScript(Dialect.getDialect(cfg.getProperties()));
+        LOGGER.info("len of scripts " + scripts.length);
+        for (String sql: scripts) {
+            LOGGER.info(sql);            
         }
-
+        // org.hibernate.engine.jdbc.internal.FormatStyle can help do formatting
+        // it has a method getFormatter(), which return Formatter
     }
     
     private static void dropAndCreateDBViaHibernate2() {
-        //SessionFactory sf = HibernateUtil.getSessionFactory();
-       
-        
-        //Properties properties = new Properties();
-        // override properties in xml
-        //properties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
-        //Persistence.generateSchema("simplePU", properties);
-        
-        //sf.close();
-        
-        
         Properties properties = new Properties();
-        // using key beginning with "javax.persistence.*" or ""hibernate.*" are both ok
-        //properties.setProperty("javax.persistence.jdbc.drive", "com.mysql.jdbc.Driver");
-        //properties.setProperty("javax.persistence.jdbc.url", "jdbc:mysql://localhost:3306/simplejpadb");
-        //properties.setProperty("javax.persistence.jdbc.user", "root");
-        //properties.setProperty("javax.persistence.jdbc.password", "");
+        // even though here we just use SchemaExport to generate schema script,
+        // we still need to set 'connection properties'
         properties.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
         properties.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/simplejpadb");
         properties.setProperty("hibernate.connection.username", "root");
         properties.setProperty("hibernate.connection.password", "");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
         Configuration cfg = new Configuration().setProperties(properties);
-        //cfg.addResource("META-INF/persistence.xml");
-        //cfg.addPackage("hello");
+        //cfg.addResource("META-INF/persistence.xml"); // not work...
+        //cfg.addPackage("hello"); // not work...
         cfg.addAnnotatedClass(Customer.class);
+        cfg.addAnnotatedClass(Order.class);
+        cfg.addAnnotatedClass(OrderLine.class);
+        cfg.addAnnotatedClass(Product.class);
         SchemaExport export = new SchemaExport(cfg);
-        export.setOutputFile("hb-exported.txt");
+        export.setOutputFile("schema-creation-SchemaExport.txt");
         export.setFormat(false);
         export.execute(false, true, false, true);
-
     }
     
     private static void generateSript() {
         Properties properties = new Properties();
-        // override properties in xml
-        properties.put("javax.persistence.schema-generation.database.action", "none");
-        // properties to generate script
         properties.put("javax.persistence.schema-generation.scripts.action", "create");
         properties.put("javax.persistence.schema-generation.scripts.create-target", "createDll.txt");
             
