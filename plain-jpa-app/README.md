@@ -14,6 +14,7 @@ you can search dependency here.
 
 what's the artifactId of jpa dependency?    
 eclipselink has a dependency of "jpa artifact". you can include eclipselink temporarily to find out "jpa artifact".    
+
     <dependency>    
       <groupId>org.eclipse.persistence</groupId>    
       <artifactId>eclipselink</artifactId>    
@@ -22,6 +23,7 @@ eclipselink has a dependency of "jpa artifact". you can include eclipselink temp
 
 it seems there is not 'offical' jpa artifact from sun/oracle.    
 below artifact looks like an 'offical' one.    
+
     <dependency>    
       <groupId>javax.persistence</groupId>    
       <artifactId>persistence-api</artifactId>    
@@ -30,6 +32,7 @@ below artifact looks like an 'offical' one.
 but its version is too old. for example, it does not support @Convert.    
 
 we can use the one from eclipselink group.    
+
     <dependency>    
       <groupId>org.eclipse.persistence</groupId>    
       <artifactId>javax.persistence</artifactId>    
